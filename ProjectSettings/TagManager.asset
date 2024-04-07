@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - PickUp
+  - Walker_red
+  - Walker_Blue
+  - walker_leader_blue
+  - walker_leader_red
   layers:
   - Default
   - TransparentFX

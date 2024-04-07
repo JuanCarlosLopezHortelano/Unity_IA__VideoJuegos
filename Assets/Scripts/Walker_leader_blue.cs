@@ -11,14 +11,18 @@ public class Walker_leader_blue : MonoBehaviour
 
     private int count;
 
+    private int vidascount = 3;
+
     private float movementX;
     private float movementY;
 
     public float speed = 0;
 
     public TextMeshProUGUI countText;
+    public TextMeshProUGUI vidascountText;
 
     public GameObject winTextObject;
+    public GameObject loseTextObject;
 
     void Start()
     {
@@ -27,8 +31,29 @@ public class Walker_leader_blue : MonoBehaviour
         count = 0;
 
         SetCountText();
-
+        SetVidasCountText();
         winTextObject.SetActive(false);
+
+        StartCoroutine(RandomMovement());
+    }
+
+    IEnumerator RandomMovement()
+    {
+        while (true)
+        {
+            // Genera valores aleatorios para las coordenadas X y Z
+            float randomX = Random.Range(-1f, 1f);
+            float randomZ = Random.Range(-1f, 1f);
+
+            // Crea un vector de movimiento con las coordenadas aleatorias
+            Vector3 movement = new Vector3(randomX, 0.0f, randomZ);
+
+            // Aplica la velocidad y actualiza la posición
+            rb.velocity = movement * speed;
+
+            // Espera un momento antes de generar otro movimiento
+            yield return new WaitForSeconds(Random.Range(1f, 3f));
+        }
     }
 
     void OnMove(InputValue movementValue)
@@ -58,6 +83,24 @@ public class Walker_leader_blue : MonoBehaviour
 
             SetCountText();
         }
+
+        else if (other.gameObject.CompareTag("Walker_red"))
+        {
+            vidascount = vidascount - 1;
+
+            SetVidasCountText();
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Walker_red"))
+        {
+            if (vidascount > 0){
+                vidascount = vidascount - 1;
+            }
+            SetVidasCountText();
+        }
     }
 
     void SetCountText()
@@ -69,6 +112,17 @@ public class Walker_leader_blue : MonoBehaviour
             // Display the win text.
             winTextObject.SetActive(true);
         }
+
+    }
+
+    void SetVidasCountText()
+    {
+        vidascountText.text = "Vidas Blue: " + vidascount.ToString();
+
+        if (vidascount == 0)
+        {
+            // Display the lose text.
+            loseTextObject.SetActive(true);
+        }
     }
 }
-
